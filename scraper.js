@@ -28,14 +28,14 @@ async function sendNotification(products, url) {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log("Notification email sent");
+    console.log("CARD FOUND! Notification email sent");
   } catch (error) {
     console.error("Error sending email:", error);
   }
 }
 async function scrapePage(url) {
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
   const page = await browser.newPage();
@@ -63,16 +63,19 @@ async function scrapePage(url) {
       addToCartButton.map((productID) => console.log(productID));
       await sendNotification(addToCartButton, url);
     } else {
-      console.log("No cards found");
+      console.log("Result: No cards found");
     }
   } catch (error) {
-    console.error("Error during scraping:", error);
+    console.error("Result: Error during scraping:", error);
   } finally {
     await browser.close();
   }
 }
 
 cron.schedule("15,30,45,0 * * * *", async () => {
-  console.log(`Starting scheduled check`);
+  console.log(`Scheduled check at ${Date.now()}`);
   scrapePage(urlToScrape);
 });
+
+console.log("Script ran!\nWill be ran again at xx:15, xx:30, xx:45, xx:00");
+scrapePage(urlToScrape);
