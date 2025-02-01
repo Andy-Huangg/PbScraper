@@ -1,6 +1,34 @@
 require("dotenv").config({ path: "./details.env" });
 const puppeteer = require("puppeteer");
+const nodemailer = require("nodemailer");
 
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
+
+async function sendNotification(products, url) {
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: process.env.EMAIL_USER,
+    subject: "PBTECH items available!",
+    text: `Available Product Links:
+    ${products.map((productID) => {
+      return `https://www.pbtech.co.nz/product/${productID} \n`;
+    })}
+    Scrape page: ${url}`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log("Notification email sent");
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
+}
 async function scrapePage(url) {
   const browser = await puppeteer.launch({
     headless: false,
@@ -29,6 +57,7 @@ async function scrapePage(url) {
 
     if (addToCartButton.length > 0) {
       addToCartButton.map((productID) => console.log(productID));
+      await sendNotification(addToCartButton, url);
     } else {
       console.log("No cards found");
     }
@@ -40,5 +69,5 @@ async function scrapePage(url) {
 }
 
 scrapePage(
-  "https://www.pbtech.co.nz/category/components/graphics-cards/nvidia-desktop-graphics-cards/geforce-rtx-5080"
+  "https://www.pbtech.co.nz/category/components/graphics-cards/nvidia-desktop-graphics-cards/geforce-rtx-4060"
 );
