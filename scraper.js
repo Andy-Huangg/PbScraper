@@ -73,9 +73,10 @@ async function scrapePage(url) {
 }
 
 cron.schedule("15,30,45,0 * * * *", async () => {
-  console.log(`Scheduled check at ${Date.now()}`);
+  console.log(`Checking for stock at ${new Date().toLocaleString()}`);
   scrapePage(urlToScrape);
 });
 
-console.log("Script ran!\nWill be ran again at xx:15, xx:30, xx:45, xx:00");
+console.log(`Checking for stock at ${new Date().toLocaleString()}`);
+console.log("Will be ran again at xx:15, xx:30, xx:45, xx:00");
 scrapePage(urlToScrape);
