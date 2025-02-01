@@ -1,6 +1,10 @@
 require("dotenv").config({ path: "./details.env" });
 const puppeteer = require("puppeteer");
 const nodemailer = require("nodemailer");
+const cron = require("node-cron");
+
+urlToScrape =
+  "https://www.pbtech.co.nz/category/components/graphics-cards/nvidia-desktop-graphics-cards/geforce-rtx-5080";
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -68,6 +72,7 @@ async function scrapePage(url) {
   }
 }
 
-scrapePage(
-  "https://www.pbtech.co.nz/category/components/graphics-cards/nvidia-desktop-graphics-cards/geforce-rtx-4060"
-);
+cron.schedule("15,30,45,0 * * * *", async () => {
+  console.log(`Starting scheduled check`);
+  scrapePage(urlToScrape);
+});
