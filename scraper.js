@@ -1,10 +1,13 @@
-require("dotenv").config({ path: "./details.env" });
+const dotenv = require("dotenv");
 const puppeteer = require("puppeteer");
 const nodemailer = require("nodemailer");
 const cron = require("node-cron");
+dotenv.config();
 
 urlToScrape =
   "https://www.pbtech.co.nz/category/components/graphics-cards/nvidia-desktop-graphics-cards/geforce-rtx-5080";
+
+productIDFilter = ["VGAPNY150801"];
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -58,10 +61,14 @@ async function scrapePage(url) {
       );
       return buttons.map((button) => button.getAttribute("data-product-id"));
     });
+    productsAvailable = addToCartButton.filter(
+      (product) => !productIDFilter.includes(product)
+    );
 
-    if (addToCartButton.length > 0) {
+    if (productsAvailable.length > 0) {
       addToCartButton.map((productID) => console.log(productID));
-      await sendNotification(addToCartButton, url);
+
+      await sendNotification(productsAvailable, url);
     } else {
       console.log("Result: No cards found");
     }
