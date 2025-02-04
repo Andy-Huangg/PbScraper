@@ -4,9 +4,10 @@ const nodemailer = require("nodemailer");
 const cron = require("node-cron");
 dotenv.config();
 
+// Set the URL to a page on PBTECH that has an "add to cart" button
 urlToScrape =
   "https://www.pbtech.co.nz/category/components/graphics-cards/nvidia-desktop-graphics-cards/geforce-rtx-5080";
-
+// Set filter to ignore products, just add in the ID
 productIDFilter = ["VGAPNY150801"];
 
 const transporter = nodemailer.createTransport({
@@ -17,6 +18,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// Send Email
 async function sendNotification(products, url) {
   const mailOptions = {
     from: process.env.EMAIL_USER,
@@ -79,6 +81,7 @@ async function scrapePage(url) {
   }
 }
 
+// Check for products in the set intervals.
 cron.schedule("15,30,45,0 * * * *", async () => {
   console.log(`Checking for stock at ${new Date().toLocaleString()}`);
   scrapePage(urlToScrape);
