@@ -38,7 +38,13 @@ async function sendNotification(products, url) {
     console.error("Error sending email:", error);
   }
 }
-async function scrapePage(page, url) {
+
+async function scrapePage(browser, url) {
+  const page = await browser.newPage();
+
+  await page.setUserAgent(
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+  );
   try {
     await page.goto(url, {
       waitUntil: "networkidle2",
@@ -74,20 +80,15 @@ async function scrapePage(page, url) {
     headless: true,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
-  const page = await browser.newPage();
-
-  await page.setUserAgent(
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-  );
 
   // Check for products in the set intervals.
   cron.schedule("* * * * *", async () => {
     console.log(`Checking for stock at ${new Date().toLocaleString()}`);
-    await scrapePage(page, urlToScrape);
+    await scrapePage(browser, urlToScrape);
     await page.reload({ waitUntil: ["networkidle0", "domcontentloaded"] });
   });
 
   console.log(`Checking for stock at ${new Date().toLocaleString()}`);
   console.log("Will be ran every minute from now on");
-  scrapePage(page, urlToScrape);
+  await scrapePage(browser, urlToScrape);
 })();
