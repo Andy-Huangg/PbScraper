@@ -1,10 +1,11 @@
-# PBTech Graphics Card Scraper
+# PBTech URL Scraper
 
-This Node.js application scrapes the PBTech website for NVIDIA desktop graphics cards and sends an email notification when new products are available.
+This Node.js application scrapes a URL of the PBTech website and sends an email notification when products are available.
 
 ## Features
 
-- Scrapes the PBTech website for NVIDIA desktop graphics cards.
+- Scrapes the PBTech website for available stock.
+- Filter to ignore unwated products.
 - Sends an email notification when new products are available.
 - Uses Puppeteer for web scraping.
 - Uses Nodemailer for sending email notifications.
