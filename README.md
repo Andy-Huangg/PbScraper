@@ -1,6 +1,7 @@
 # PBTech URL Scraper
 
 This Node.js application scrapes a URL of the PBTech website and sends an email notification when products are available.
+I built this application to get notified as soon as new graphic cards were in stock.
 
 ## Features
 
